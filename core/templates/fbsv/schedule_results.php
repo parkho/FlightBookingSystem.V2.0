@@ -9,17 +9,9 @@ $last_name = OperationsData::getAirportInfo($last_location->arricao);
 	<li>Available flights from: <b><font color="#FF3300"><?php echo $last_location->arricao.' ( '.$last_name->name.')' ;?></font></b></li>
 </ul>
 <table>
-	<?php
-	if(!$allroutes)
-	{
-	?>
+	<?php if(!$allroutes) { ?>
 		<tr><td align="center">No flights from <?php echo $last_location->arricao.' ( '.$last_name->name.')' ;?>!</td></tr>
-		
-	<?php
-	}
-	else
-	{
-	?>
+	<?php } else { ?>
 <tr>
     <th>Flight ID</th>
     <th>Origin</th>
@@ -53,26 +45,20 @@ $last_name = OperationsData::getAirportInfo($last_location->arricao);
          
 	   <?php 
 		$bids = SchedulesData::getBids(Auth::$pilot->pilotid);
-		if (count($bids) > 0)
-		{
-			?>
-			 <input type="button" disabled="disabled" value="Reserved" title="You Have A Reservation!">
-			 <a href="<?php echo url('/schedules/bids'); ?>"><input type="submit" name="submit" value="Remove Bid" /></a>
-			<?php
-		}
-		elseif($route->bidid != 0)
-	    {
-        ?>
-        <input type="button" disabled="disabled" value="booked" title="Flight Is Already Booked!">
-        <?php
-		}
-        else
+		if(count($bids) > 0)
 		{
 		?>
-	    <a id="<?php echo $route->id; ?>" style="text decoration: none;" href="<?php echo url('/schedules/addbid?id='.$route->id);?>"><input type="button" value="Book Flight" title="Click To Book Flight!"></a>
-        <?php                    
-        }
-        ?>
+			<input type="button" disabled="disabled" value="Reserved" title="You Have A Reservation!">
+			<a href="<?php echo url('/schedules/bids'); ?>"><input type="submit" name="submit" value="Remove Bid" /></a>
+		<?php
+        } elseif($route->bidid != 0) { 
+		?>
+        	<input type="button" disabled="disabled" value="booked" title="Flight Is Already Booked!">
+        <?php
+        } else { 
+		?>
+	    	<a id="<?php echo $route->id; ?>" style="text decoration: none;" href="<?php echo url('/schedules/addbid?id='.$route->id);?>"><input type="button" value="Book Flight" title="Click To Book Flight!"></a>
+        <?php } ?>
     </td>
 </tr>
 <tr>
@@ -115,7 +101,7 @@ $last_name = OperationsData::getAirportInfo($last_location->arricao);
 					</b>
 				</td>
 				<td align="left">Distance:</td>
-				<td colspan="0" align="left" ><b><?phpecho $route->distance . Config::Get('UNITS') ;?></b></td>
+				<td colspan="0" align="left" ><b><?php echo $route->distance . Config::Get('UNITS') ;?></b></td>
 			</tr>
 			<tr>
 				<td align="left">Dep Time:</td>
@@ -131,7 +117,6 @@ $last_name = OperationsData::getAirportInfo($last_location->arricao);
 					<font color="red">
 					<b>
 					<?php 
-					
 					$dist = $route->distance;
 					$speed = 440;
 					$app = $speed / 60 ;
@@ -162,17 +147,14 @@ $last_name = OperationsData::getAirportInfo($last_location->arricao);
 				<td colspan="0" align="left" >
 					<b>
 					<?php
-					if($route->flighttype == "P")
-					{
-					echo'Passenger' ;
+					if($route->flighttype == "P") {
+						echo 'Passenger' ;
 					}
-					if($route->flighttype == "C")
-					{
-					echo'Cargo' ;
+					if($route->flighttype == "C") {
+						echo 'Cargo' ;
 					}
-					if($route->flighttype == "H")
-					{
-					echo'Charter' ;
+					if($route->flighttype == "H") {
+						echo 'Charter' ;
 					}
 					?>
 					</b>
@@ -188,21 +170,16 @@ $last_name = OperationsData::getAirportInfo($last_location->arricao);
 				<td width="100%" colspan="4">
 					<?php
 					$string = "";
-								$string = $string.$route->depicao.'+-+'.$route->arricao.',+';
-								?>
-
-								<img width="100%" src="http://www.gcmap.com/map?P=<?php echo $string ?>&amp;MS=bm&amp;MR=240&amp;MX=680x200&amp;PM=pemr:diamond7:red%2b%22%25I%22:red&amp;PC=%230000ff" />
+					$string = $string.$route->depicao.'+-+'.$route->arricao.',+';
+					?>
+					<img width="100%" src="http://www.gcmap.com/map?P=<?php echo $string ?>	&amp;MS=bm&amp;MR=240&amp;MX=680x200&amp;PM=pemr:diamond7:red%2b%22%25I%22:red&amp;PC=%230000ff" />
 				</td>
 			</tr>
 			//<-----------add extra codes for fuel calculations here--------------->
 		</table>
     </td>
-</tr>
-			
-<?php
-}
-}
-?>
+</tr>		
+<?php } } ?>
 </table>
 
 			

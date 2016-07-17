@@ -6,10 +6,9 @@ if(!$last_location)
 {
 FBSVData::update_pilot_location(Auth::$userinfo->hub);
 }
-
 ?>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
-	<script>
+<script>
 $(document).ready(function(){
 	$("select").change(function () {
 		var cost = "";
@@ -21,7 +20,7 @@ $(document).ready(function(){
                 $("input[name=airport]").val( airport );
 		}).trigger('change');
 });
-	</script>
+</script>
 <h3>Flight Dispatch</h3>
 <ul>
 	<li>Current Location: <b><font color="#FF3300"><?php echo $last_location->arricao?> - <?php echo $last_name->name?></font></b></li>
@@ -46,24 +45,18 @@ $(document).ready(function(){
                 <select style="width: 30%" name="aircraft">
                     <option value="">All</option>
                     <?php
-						$airc = FBSVData::routeaircraft($last_location->arricao);
-						if(!$airc)
-							{
-								echo '<option>No Aircraft Available!</option>';
-							}
-						else
-							{
-								foreach ($airc as $air)
-									{
-									$ai = FBSVData::getaircraftbyID($air->aircraft);
+					$airc = FBSVData::routeaircraft($last_location->arricao);
+					if(!$airc) {
+						echo '<option>No Aircraft Available!</option>';
+					} else {
+						foreach ($airc as $air) {
+							$ai = FBSVData::getaircraftbyID($air->aircraft);
+							echo '<option value="'.$ai->icao.'">'.$ai->name.'</option>';
+						}
+					}
 					?>
-							<option value="<?php echo $ai->icao ;?>"><?php
-							echo $ai->name ;?></option>
-					<?php
-									}
-							}
-                    ?>
-                </select> <img src="<?php echo fileurl('/lib/images/info.png') ;?>" title="Available aircraft to search from your current location">
+                </select>
+                <img src="<?php echo fileurl('/lib/images/info.png') ;?>" title="Available aircraft to search from your current location">
             </td>
         </tr>
         <tr>
@@ -73,20 +66,17 @@ $(document).ready(function(){
                     <option value="">All</option>
                     <?php
 						$airs = FBSVData::arrivalairport($last_location->arricao);
-						if(!$airs)
-							{
-								echo '<option>No Airports Available!</option>';
+						if(!$airs) {
+							echo '<option>No Airports Available!</option>';
+						} else {
+							foreach ($airs as $air) {
+									$nam = OperationsData::getAirportInfo($air->arricao);
+									echo '<option value="'.$air->arricao.'">'.$air->arricao.' - '.$nam->name.'</option>';
 							}
-						else
-							{
-								foreach ($airs as $air)
-									{
-										$nam = OperationsData::getAirportInfo($air->arricao);
-										echo '<option value="'.$air->arricao.'">'.$air->arricao.' - '.$nam->name.'</option>';
-									}
-							}
+						}
                     ?>
-                </select> <img src="<?php echo fileurl('/lib/images/info.png') ;?>" title="Available airports to search from your current location">
+                </select>
+                <img src="<?php echo fileurl('/lib/images/info.png') ;?>" title="Available airports to search from your current location">
             </td>
         	<td align="center" >
 				<input type="hidden" name="action" value="findflight" />
@@ -105,52 +95,37 @@ $(document).ready(function(){
 <form action="<?php echo url('/FBSV11/jumpseat');?>" method="get">
 	<table>
 		<tr>	
-			<td>select airport to transfer : </td>
-			<td >
+			<td>Select airport to transfer:</td>
+			<td>
 					
 					<select name="depicao" onchange="listSel(this,'cost')">
-						<option value="">--Select--</option>
+						<option value="" selected disabled>--Select Airport--</option>
 						<?php
 							foreach ($airports as $airport){
 								$distance = round(SchedulesData::distanceBetweenPoints($last_name->lat, $last_name->lng, $airport->lat, $airport->lng), 0);
 								$permile = Config::Get('JUMPSEAT_COST');
 								$cost = ($permile * $distance);
 								$check = PIREPData::getLastReports(Auth::$userinfo->pilotid, 1,1);
-								if($cost >= Auth::$userinfo->totalpay)
-								   {
+								if($cost >= Auth::$userinfo->totalpay) {
 									continue;
-								   }
-								elseif($check->accepted == PIREP_ACCEPTED || !$check)
-								   {
+								} elseif($check->accepted == PIREP_ACCEPTED || !$check) {
 									 echo "<option name='{$cost}' value='{$airport->icao}'>{$airport->icao} - {$airport->name}    /Cost - <font color='#66FF00'>$ {$cost}</font></option>";
-								   }
-									?>
-								   
-								   <hr> 
-					 <?php                   
-							 }
-						?> 
+								}
+								?>
+								<hr> 
+					 	<?php } ?> 
 					</select>
 				</td>
-					 <?php
-						if(Auth::$userinfo->totalpay == "0")
-							{
-						?>
-								<td align="center"><input type="submit" name="submit" value="Transfer" disabled="disabled"></td> 
-						<?php
-							}
-						else
-							{
-						?>
-								<td align="center"><input type="submit" name="submit" value="Transfer" ></td>
-						<?php
-							}
-						?>
+					<?php if(Auth::$userinfo->totalpay == "0") { ?>
+						<td align="center"><input type="submit" name="submit" value="Transfer" disabled="disabled"></td> 
+					<?php } else { ?>
+						<td align="center"><input type="submit" name="submit" value="Transfer" ></td>
+					<?php } ?>
 						 
 		</tr>
     </table>
-<input type="hidden" name="cost">
-<input type="hidden" name="airport">
+    <input type="hidden" name="cost">
+    <input type="hidden" name="airport">
 </form>
 
 

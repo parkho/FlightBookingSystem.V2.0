@@ -1,7 +1,7 @@
 <?php
 class FBSVData extends CodonData
 {
-    public function findschedules($arricao, $depicao, $airline, $aircraft)   
+    public static function findschedules($arricao, $depicao, $airline, $aircraft)   
 	{
         $query = "SELECT phpvms_schedules.*, phpvms_aircraft.name AS aircraft, phpvms_aircraft.registration
                FROM phpvms_schedules, phpvms_aircraft
@@ -99,7 +99,6 @@ class FBSVData extends CodonData
 	public function routeaircraft($icao)
 	{
 		$sql = "SELECT DISTINCT aircraft FROM phpvms_schedules WHERE depicao = '$icao'";
-		
 		return DB::get_results($sql);
 	}
 	
@@ -112,7 +111,6 @@ class FBSVData extends CodonData
 	public function arrivalairport($icao)
 	{
 		$sql = "SELECT DISTINCT arricao FROM phpvms_schedules WHERE depicao = '$icao'";
-		
 		return DB::get_results($sql);
 	}
 
